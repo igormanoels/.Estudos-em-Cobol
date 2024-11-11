@@ -26,6 +26,8 @@ Exercícios realizados no curso de Análise e Desenvolvimento de Sistemas, Disci
 ## EXECUTANDO OS ARQUIVOS
 **Comando para compilar o arquivo**
 - cobc -x PrimeiroPrograma.cob
+**Comando para compilar vários arquivos que se interrelacionam**
+- cobc -x arquivo1.cob arquivo2.cob arquivo2.cob -o arquivo1
 **Comando para executar o arquivo**
 - ./PrimeiroPrograma
 
