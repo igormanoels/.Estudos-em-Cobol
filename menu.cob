@@ -1,13 +1,13 @@
        IDENTIFICATION DIVISION.
        PROGRAM-ID. menu.
-
+       
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
-
+       
        DATA DIVISION.
        WORKING-STORAGE SECTION.
        01 WS-OPTION          PIC 9 VALUE 0.
-
+       
        PROCEDURE DIVISION.
        MAIN-PROGRAM.
            PERFORM DISPLAY-MENU
@@ -27,22 +27,25 @@
                PERFORM DISPLAY-MENU
            END-PERFORM
            STOP RUN.
-
+       
        DISPLAY-MENU.
-           DISPLAY "=============================="
-           DISPLAY "       MENU PRINCIPAL         "
-           DISPLAY "=============================="
+           CALL "clearScreen"
+           DISPLAY "================================================="
+           DISPLAY "                 MENU PRINCIPAL                  "
+           DISPLAY "================================================="
            DISPLAY "1 - Gestao de Funcionario"
            DISPLAY "2 - Gestao de Fornecedor"
            DISPLAY "9 - Sair"
-           DISPLAY "==============================".
-
+           DISPLAY "=================================================".
+       
        OPTION-1.
+           CALL 'clearScreen'.
            CALL 'gestaoFuncionario'.
-
+       
        OPTION-2.
+           CALL 'clearScreen'.
            CALL 'gestaoFornecedor'.
-
+       
        EXIT-PROGRAM.
            DISPLAY "Saindo do programa. Obrigado!".
            STOP RUN.

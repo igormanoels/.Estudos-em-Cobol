@@ -46,17 +46,22 @@
            STOP RUN.
 
        TELA-PRINCIPAL.
-           DISPLAY "====================================="
-           DISPLAY "       GESTAO DE FUNCIONARIO         "
-           DISPLAY "====================================="
+           CALL 'clearScreen'.
+           DISPLAY "================================================="
+           DISPLAY "              GESTAO DE FUNCIONARIO              "
+           DISPLAY "================================================="
            DISPLAY "1 - Cadastrar Funcionario"
            DISPLAY "2 - Consultar Funcionario"
            DISPLAY "3 - Atualizar Funcionario"
            DISPLAY "4 - Deletar Funcionario"
            DISPLAY "9 - Voltar ao menu principal"
-           DISPLAY "=====================================".
+           DISPLAY "=================================================".
 
        CADASTRAR-FUNCIONARIO.
+           CALL 'clearScreen'.
+           DISPLAY "================================================="
+           DISPLAY "              CADASTRAR FUNCIONARIO              "
+           DISPLAY "================================================="
            DISPLAY "Digite o codigo do funcionario: " WITH NO ADVANCING
            ACCEPT CODIGO
            DISPLAY "Digite o nome do funcionario: " WITH NO ADVANCING
@@ -124,6 +129,9 @@
 
        EXCLUIR-FUNCIONARIO.
            DISPLAY "Exclusao de funcionario em desenvolvimento.".
+
+       CLEAR-SYSTEM.
+           CALL 'clearScreen'.
 
        RETORNAR.
            DISPLAY "Voltando ao menu principal."
