@@ -1,5 +1,5 @@
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. gestaoFornecedor.
+       PROGRAM-ID. cadastrarEndereco.
 
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
@@ -9,10 +9,9 @@
        PROCEDURE DIVISION.
        TELA-PRINCIPAL.
            DISPLAY "====================================="
-           DISPLAY "       GESTAO DE FORNECEDOR          "
+           DISPLAY "         CADASTRAR ENDERECO          "
            DISPLAY "====================================="
-           DISPLAY "Esta é a tela de Opcao 2."
+           DISPLAY "Esta é a tela de Opcao 3."
            DISPLAY "Pressione Enter para voltar ao menu principal..."
            ACCEPT OMITTED
            GOBACK.
-

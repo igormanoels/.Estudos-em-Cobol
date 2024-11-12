@@ -1,5 +1,5 @@
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. gestaoFornecedor.
+       PROGRAM-ID. gestaoEstoque.
 
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
@@ -9,9 +9,9 @@
        PROCEDURE DIVISION.
        TELA-PRINCIPAL.
            DISPLAY "====================================="
-           DISPLAY "       GESTAO DE FORNECEDOR          "
+           DISPLAY "          GESTAO DE ESTOQUE          "
            DISPLAY "====================================="
-           DISPLAY "Esta é a tela de Opcao 2."
+           DISPLAY "Esta é a tela de Opcao 4."
            DISPLAY "Pressione Enter para voltar ao menu principal..."
            ACCEPT OMITTED
            GOBACK.

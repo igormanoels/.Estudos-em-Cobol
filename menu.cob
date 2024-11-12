@@ -20,6 +20,10 @@
                        PERFORM OPTION-1
                    WHEN 2
                        PERFORM OPTION-2
+                   WHEN 3
+                       PERFORM OPTION-3
+                   WHEN 4
+                       PERFORM OPTION-4
                    WHEN 9
                        PERFORM EXIT-PROGRAM
                    WHEN OTHER
@@ -36,6 +40,8 @@
            DISPLAY "================================================="
            DISPLAY "1 - Gestao de Funcionario"
            DISPLAY "2 - Gestao de Fornecedor"
+           DISPLAY "3 - Cadastro de Endereco"
+           DISPLAY "4 - Gestao de Estoque"
            DISPLAY "9 - Sair"
            DISPLAY "=================================================".
        
@@ -46,6 +52,13 @@
        OPTION-2.
            CALL 'clearScreen'.
            CALL 'gestaoFornecedor'.
+       
+       OPTION-3.
+           CALL 'clearScreen'.
+           CALL 'cadastrarEndereco'.
+       OPTION-4.
+           CALL 'clearScreen'.
+           CALL 'gestaoEstoque'.
        
        EXIT-PROGRAM.
            DISPLAY "Deseja sair mesmo? (S/N): " WITH NO ADVANCING
