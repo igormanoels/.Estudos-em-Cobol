@@ -2,11 +2,19 @@
        PROGRAM-ID. gestaoFuncionario.
 
        ENVIRONMENT DIVISION.
-       CONFIGURATION SECTION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+           SELECT FUNCIONARIO-FILE ASSIGN TO "dadosFuncionario.txt"
+               ORGANIZATION IS LINE SEQUENTIAL.
 
        DATA DIVISION.
+       FILE SECTION.
+       FD FUNCIONARIO-FILE.
+       01 FUNCIONARIO-RECORD.
+           05 FUNCIONARIO-DADOS PIC X(100).
+
        WORKING-STORAGE SECTION.
-       01 WS-OPTION             PIC 9 VALUE 0.
+       01 WS-OPTION             PIC 9(5) VALUE 0.
        01 FUNCIONARIO.
            05 CODIGO            PIC 9(5).
            05 NOME              PIC X(30).
@@ -20,6 +28,7 @@
            05 IMPOSTO-RENDA     PIC 9(6)V99.
            05 SALARIO-FAMILIA   PIC 9(6)V99.
            05 SALARIO-LIQUIDO   PIC 9(7)V99.
+       01 FUNCIONARIO-ENCONTRADO    PIC X(3) VALUE "NAO".
 
        PROCEDURE DIVISION.
        MAIN-PROGRAM.
@@ -66,16 +75,16 @@
            ACCEPT CODIGO
            DISPLAY "Digite o nome do funcionario: " WITH NO ADVANCING
            ACCEPT NOME
-           DISPLAY "Tipo de Salario (H - Horista, D - Diarista, "
-           DISPLAY "M - Mensalista): " WITH NO ADVANCING
+           DISPLAY "Tipo de Salario "
+           DISPLAY "(H-Hora, D-Diario, M-Mensal): " WITH NO ADVANCING
            ACCEPT TIPO-SALARIO
            DISPLAY "Digite o salario base: " WITH NO ADVANCING
            ACCEPT SALARIO-BASE
            DISPLAY "Digite o numero de filhos: " WITH NO ADVANCING
            ACCEPT NUM-FILHOS
-           DISPLAY "Digite o departamento (1-10): " WITH NO ADVANCING
+           DISPLAY "Digite nome do departamento: " WITH NO ADVANCING
            ACCEPT DEPARTAMENTO
-           DISPLAY "Digite a funcao (A - V): " WITH NO ADVANCING
+           DISPLAY "Digite a funcao: " WITH NO ADVANCING
            ACCEPT FUNCAO
 
            PERFORM CALCULAR-SALARIO-BRUTO
@@ -83,6 +92,25 @@
            PERFORM CALCULAR-IMPOSTO-RENDA
            PERFORM CALCULAR-SALARIO-FAMILIA
            PERFORM CALCULAR-SALARIO-LIQUIDO
+
+           MOVE SPACES TO FUNCIONARIO-DADOS.
+           STRING CODIGO DELIMITED BY SPACE "," 
+                  NOME DELIMITED BY SPACE "," 
+                  TIPO-SALARIO DELIMITED BY SPACE "," 
+                  SALARIO-BASE DELIMITED BY SPACE "," 
+                  NUM-FILHOS DELIMITED BY SPACE "," 
+                  DEPARTAMENTO DELIMITED BY SPACE "," 
+                  FUNCAO DELIMITED BY SPACE "," 
+                  SALARIO-BRUTO DELIMITED BY SPACE "," 
+                  INSS DELIMITED BY SPACE "," 
+                  IMPOSTO-RENDA DELIMITED BY SPACE "," 
+                  SALARIO-FAMILIA DELIMITED BY SPACE "," 
+                  SALARIO-LIQUIDO DELIMITED BY SPACE 
+                  INTO FUNCIONARIO-DADOS.
+
+           OPEN OUTPUT FUNCIONARIO-FILE.
+           WRITE FUNCIONARIO-RECORD FROM FUNCIONARIO-DADOS.
+           CLOSE FUNCIONARIO-FILE.
 
            DISPLAY "Funcionario cadastrado com sucesso!".
 
@@ -122,10 +150,135 @@
            COMPUTE SALARIO-LIQUIDO = SALARIO-LIQUIDO - IMPOSTO-RENDA.
 
        CONSULTAR-FUNCIONARIO.
-           DISPLAY "Consulta de funcionario em desenvolvimento.".
+           CALL 'clearScreen'.
+           DISPLAY "================================================="
+           DISPLAY "              CONSULTAR FUNCIONARIO              "
+           DISPLAY "================================================="
+           DISPLAY "Digite o codigo do funcionario: " WITH NO ADVANCING
+           ACCEPT WS-OPTION
+
+           OPEN INPUT FUNCIONARIO-FILE
+           PERFORM BUSCAR-FUNCIONARIO
+           CLOSE FUNCIONARIO-FILE
+           IF FUNCIONARIO-ENCONTRADO = "SIM"
+               DISPLAY "Funcionario encontrado:"
+               DISPLAY "Codigo: " CODIGO
+               DISPLAY "Nome: " NOME
+               DISPLAY "Tipo de Salario: " TIPO-SALARIO
+               DISPLAY "Salario Base: " SALARIO-BASE
+               DISPLAY "Numero de Filhos: " NUM-FILHOS
+               DISPLAY "Departamento: " DEPARTAMENTO
+               DISPLAY "Funcao: " FUNCAO
+               DISPLAY "Salario Bruto: " SALARIO-BRUTO
+               DISPLAY "INSS: " INSS
+               DISPLAY "Imposto de Renda: " IMPOSTO-RENDA
+               DISPLAY "Salario Familia: " SALARIO-FAMILIA
+               DISPLAY "Salario Liquido: " SALARIO-LIQUIDO
+           ELSE
+               DISPLAY "Funcionario nao encontrado."
+           END-IF.
+           DISPLAY "Pressione ENTER para continuar."
+           ACCEPT WS-OPTION.
+
+       BUSCAR-FUNCIONARIO.
+           MOVE "NAO" TO FUNCIONARIO-ENCONTRADO
+           READ FUNCIONARIO-FILE INTO FUNCIONARIO-RECORD
+               AT END
+                   DISPLAY "Arquivo de funcionarios chegou ao fim."
+               NOT AT END
+                   UNSTRING FUNCIONARIO-RECORD DELIMITED BY "," 
+                       INTO CODIGO NOME TIPO-SALARIO SALARIO-BASE 
+                           NUM-FILHOS DEPARTAMENTO FUNCAO SALARIO-BRUTO 
+                           INSS IMPOSTO-RENDA SALARIO-FAMILIA 
+                           SALARIO-LIQUIDO
+                   IF CODIGO = WS-OPTION
+                       MOVE "SIM" TO FUNCIONARIO-ENCONTRADO
+                   END-IF
+           END-READ.
+       
 
        ATUALIZAR-FUNCIONARIO.
-           DISPLAY "Atualizacao de funcionario em desenvolvimento.".
+           CALL 'clearScreen'.
+           DISPLAY "================================================="
+           DISPLAY "              ATUALIZAR FUNCIONARIO              "
+           DISPLAY "================================================="
+           DISPLAY "Digite o codigo do funcionario a ser atualizado: " WITH NO ADVANCING
+           ACCEPT WS-OPTION
+
+           OPEN I-O FUNCIONARIO-FILE
+           PERFORM ATUALIZAR-REGISTRO
+           CLOSE FUNCIONARIO-FILE
+
+           DISPLAY "Funcionario atualizado com sucesso!"
+           DISPLAY "Pressione ENTER para continuar."
+           ACCEPT WS-OPTION.
+
+       ATUALIZAR-REGISTRO.
+           MOVE "NAO" TO FUNCIONARIO-ENCONTRADO
+           REWRITE-LOOP.
+               READ FUNCIONARIO-FILE INTO FUNCIONARIO-RECORD
+                   AT END
+                       DISPLAY "Arquivo de funcionarios chegou ao fim."
+                   NOT AT END
+                       UNSTRING FUNCIONARIO-RECORD DELIMITED BY "," 
+                           INTO CODIGO NOME TIPO-SALARIO SALARIO-BASE 
+                               NUM-FILHOS DEPARTAMENTO FUNCAO 
+                               SALARIO-BRUTO INSS IMPOSTO-RENDA 
+                               SALARIO-FAMILIA SALARIO-LIQUIDO
+                       IF CODIGO = WS-OPTION
+                           MOVE "SIM" TO FUNCIONARIO-ENCONTRADO
+                           DISPLAY "Funcionario encontrado!"
+                           DISPLAY "Nome atual: " NOME
+                           DISPLAY "Digite o novo nome: " 
+                           WITH NO ADVANCING
+                           ACCEPT NOME
+                           DISPLAY "Tipo de Salario" 
+                           DISPLAY "(H-Hora, D-Diario, M-Mensal): " 
+                           WITH NO ADVANCING
+                           ACCEPT TIPO-SALARIO
+                           DISPLAY "Digite o novo salario base: " 
+                           WITH NO ADVANCING
+                           ACCEPT SALARIO-BASE
+                           DISPLAY "Digite o numero de filhos: " 
+                           WITH NO ADVANCING
+                           ACCEPT NUM-FILHOS
+                           DISPLAY "Digite o nome do departamento: " 
+                           WITH NO ADVANCING
+                           ACCEPT DEPARTAMENTO
+                           DISPLAY "Digite a funcao: " 
+                           WITH NO ADVANCING
+                           ACCEPT FUNCAO
+                           
+                           PERFORM CALCULAR-SALARIO-BRUTO
+                           PERFORM CALCULAR-INSS
+                           PERFORM CALCULAR-IMPOSTO-RENDA
+                           PERFORM CALCULAR-SALARIO-FAMILIA
+                           PERFORM CALCULAR-SALARIO-LIQUIDO
+       
+                           MOVE SPACES TO FUNCIONARIO-DADOS.
+                           STRING CODIGO DELIMITED BY SPACE "," 
+                                  NOME DELIMITED BY SPACE "," 
+                                  TIPO-SALARIO DELIMITED BY SPACE "," 
+                                  SALARIO-BASE DELIMITED BY SPACE "," 
+                                  NUM-FILHOS DELIMITED BY SPACE "," 
+                                  DEPARTAMENTO DELIMITED BY SPACE "," 
+                                  FUNCAO DELIMITED BY SPACE "," 
+                                  SALARIO-BRUTO DELIMITED BY SPACE "," 
+                                  INSS DELIMITED BY SPACE "," 
+                                  IMPOSTO-RENDA DELIMITED BY SPACE "," 
+                                  SALARIO-FAMILIA DELIMITED BY SPACE "," 
+                                  SALARIO-LIQUIDO DELIMITED BY SPACE 
+                                  INTO FUNCIONARIO-DADOS.
+       
+                           REWRITE FUNCIONARIO-RECORD FROM 
+                            FUNCIONARIO-DADOS
+                       END-IF
+               END-READ.
+           IF FUNCIONARIO-ENCONTRADO = "NAO"
+               DISPLAY "Funcionario nao encontrado!"
+           END-IF.
+
+
 
        EXCLUIR-FUNCIONARIO.
            DISPLAY "Exclusao de funcionario em desenvolvimento.".

@@ -7,6 +7,7 @@
        DATA DIVISION.
        WORKING-STORAGE SECTION.
        01 WS-OPTION          PIC 9 VALUE 0.
+       01 WS-SAIR-OPCAO      PIC X(1).
        
        PROCEDURE DIVISION.
        MAIN-PROGRAM.
@@ -47,5 +48,20 @@
            CALL 'gestaoFornecedor'.
        
        EXIT-PROGRAM.
-           DISPLAY "Saindo do programa. Obrigado!".
-           STOP RUN.
+           DISPLAY "Deseja sair mesmo? (S/N): " WITH NO ADVANCING
+           ACCEPT WS-SAIR-OPCAO
+           IF WS-SAIR-OPCAO = "S" OR WS-SAIR-OPCAO = "s"
+               DISPLAY "Saindo do programa. Obrigado!"
+               DISPLAY "Pressione Enter para fechar o programa..."
+               ACCEPT WS-SAIR-OPCAO
+               STOP RUN
+           ELSE
+               IF WS-SAIR-OPCAO = "N" OR WS-SAIR-OPCAO = "n"
+                   DISPLAY "Voltando ao menu principal."
+               ELSE
+                   DISPLAY "Escolha inválida."
+               END-IF
+           END-IF
+           MOVE SPACES TO WS-SAIR-OPCAO.
+           MOVE ZEROES TO WS-OPTION.
+
