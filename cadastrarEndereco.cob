@@ -53,7 +53,7 @@
        TELA-PRINCIPAL.
            CALL 'clearScreen'.
            DISPLAY "================================================="
-           DISPLAY "                CADASTRAR ENDERECO               "
+           DISPLAY "                GESTAO ENDERECOS                 "
            DISPLAY "================================================="
            DISPLAY "1 - Cadastrar Produto"
            DISPLAY "2 - Consultar Produto"
@@ -103,7 +103,10 @@
            DISPLAY "================================================="
            DISPLAY "              CONSULTAR ENDERECO                 "
            DISPLAY "================================================="
-           DISPLAY "Em desenvolvimento.".
+           DISPLAY "Em desenvolvimento."
+           DISPLAY "Pressione Enter para continuar..."
+           ACCEPT WS-OPTION.
+
 
        ATUALIZAR-ENDERECO.
            CALL 'clearScreen'.
@@ -111,14 +114,22 @@
            DISPLAY "              ATUALIZAR ENDERECO                 "
            DISPLAY "================================================="
            DISPLAY "Em desenvolvimento.".
-       
+           DISPLAY "Pressione Enter para continuar..."
+           ACCEPT WS-OPTION.
+
+
        REMOVER-ENDERECO.
            CALL 'clearScreen'.
            DISPLAY "================================================="
            DISPLAY "                REMOVER ENDERECO                 "
            DISPLAY "================================================="
-           DISPLAY "Em desenvolvimento.".
+           DISPLAY "Em desenvolvimento."
+           DISPLAY "Pressione Enter para continuar..."
+           ACCEPT WS-OPTION.
+
 
        RETORNAR.
            DISPLAY "Voltando ao menu principal."
+           DISPLAY "Pressione Enter para continuar..."
+           ACCEPT WS-OPTION.
            GOBACK.

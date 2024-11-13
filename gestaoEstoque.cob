@@ -100,22 +100,30 @@
            DISPLAY "================================================="
            DISPLAY "              CONSULTAR PRODUTO                  "
            DISPLAY "================================================="
-           DISPLAY "Em desenvolvimento.".
+           DISPLAY "Em desenvolvimento."
+           DISPLAY "Pressione Enter para continuar..."
+           ACCEPT WS-OPTION.
 
        ADICIONAR-PRODUTO.
            CALL 'clearScreen'.
            DISPLAY "================================================="
-           DISPLAY "               ADCIONAR PRODUTO                  "
+           DISPLAY "               ADICIONAR PRODUTO                 "
            DISPLAY "================================================="
-           DISPLAY "Em desenvolvimento.".
+           DISPLAY "Em desenvolvimento."
+           DISPLAY "Pressione Enter para continuar..."
+           ACCEPT WS-OPTION.
 
        REMOVER-PRODUTO.
            CALL 'clearScreen'.
            DISPLAY "================================================="
-           DISPLAY "              REMOVER PRODUTO                  "
+           DISPLAY "              REMOVER PRODUTO                    "
            DISPLAY "================================================="
-           DISPLAY "Em desenvolvimento.".
+           DISPLAY "Em desenvolvimento."
+           DISPLAY "Pressione Enter para continuar..."
+           ACCEPT WS-OPTION.
 
        RETORNAR.
            DISPLAY "Voltando ao menu principal."
+           DISPLAY "Pressione Enter para continuar..."
+           ACCEPT WS-OPTION.
            GOBACK.

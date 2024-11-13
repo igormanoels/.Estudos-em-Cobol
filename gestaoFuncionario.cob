@@ -66,6 +66,7 @@
            DISPLAY "9 - Voltar ao menu principal"
            DISPLAY "=================================================".
 
+
        CADASTRAR-FUNCIONARIO.
            CALL 'clearScreen'.
            DISPLAY "================================================="
@@ -149,6 +150,7 @@
            COMPUTE SALARIO-LIQUIDO = SALARIO-LIQUIDO - INSS.
            COMPUTE SALARIO-LIQUIDO = SALARIO-LIQUIDO - IMPOSTO-RENDA.
 
+
        CONSULTAR-FUNCIONARIO.
            CALL 'clearScreen'.
            DISPLAY "================================================="
@@ -195,15 +197,30 @@
                        MOVE "SIM" TO FUNCIONARIO-ENCONTRADO
                    END-IF
            END-READ.
-       
+
+
        ATUALIZAR-FUNCIONARIO.
-           DISPLAY "Exclusao de funcionario em desenvolvimento.".
+           CALL 'clearScreen'.
+           DISPLAY "================================================="
+           DISPLAY "            ATUALIZAR FUNCIONARIO                "
+           DISPLAY "================================================="
+           DISPLAY "Em desenvolvimento."
+           DISPLAY "Pressione Enter para continuar..."
+           ACCEPT WS-OPTION.
 
 
        EXCLUIR-FUNCIONARIO.
-           DISPLAY "Exclusao de funcionario em desenvolvimento.".
+           CALL 'clearScreen'.
+           DISPLAY "================================================="
+           DISPLAY "             REMOVER FUNCIONARIO                 "
+           DISPLAY "================================================="
+           DISPLAY "Em desenvolvimento."
+           DISPLAY "Pressione Enter para continuar..."
+           ACCEPT WS-OPTION.
 
        RETORNAR.
            DISPLAY "Voltando ao menu principal."
+           DISPLAY "Pressione Enter para continuar..."
+           ACCEPT WS-OPTION.
            GOBACK.
 

@@ -97,22 +97,34 @@
            DISPLAY "================================================="
            DISPLAY "             CONSULTAR FORNECEDOR                "
            DISPLAY "================================================="
-           DISPLAY "Em desenvolvimento.".
+           DISPLAY "Em desenvolvimento."
+           DISPLAY "Pressione Enter para continuar..."
+           ACCEPT WS-OPTION.
+
 
        ATUALIZAR-FORNECEDOR.
            CALL 'clearScreen'.
            DISPLAY "================================================="
            DISPLAY "             ATUALIZAR FORNECEDOR                "
            DISPLAY "================================================="
-           DISPLAY "Em desenvolvimento.".
+           DISPLAY "Em desenvolvimento."
+           DISPLAY "Pressione Enter para continuar..."
+           ACCEPT WS-OPTION.
+
 
        REMOVER-FORNECEDOR.
            CALL 'clearScreen'.
            DISPLAY "================================================="
            DISPLAY "               REMOVER FORNECEDOR                "
            DISPLAY "================================================="
-           DISPLAY "Em desenvolvimento.".
+           DISPLAY "Em desenvolvimento."
+           DISPLAY "Pressione Enter para continuar..."
+           ACCEPT WS-OPTION.
+
+
 
        RETORNAR.
            DISPLAY "Voltando ao menu principal."
+           DISPLAY "Pressione Enter para continuar..."
+           ACCEPT WS-OPTION.
            GOBACK.
