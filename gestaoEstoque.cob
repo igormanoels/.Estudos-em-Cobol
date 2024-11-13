@@ -22,6 +22,7 @@
                05 PRECO-UNIDADE     PIC 9(7)V99.
                05 COD-FORNECEDOR    PIC 9(6).
                05 VALOR-TOTAL       PIC 9(7)V99.
+           01 WS-END-OF-FILE        PIC X VALUE "N".
 
        PROCEDURE DIVISION.
        MAIN-PROGRAM.
@@ -78,12 +79,12 @@
            PERFORM CALCULAR-VALOR-TOTAL
 
            MOVE SPACES TO ESTOQUE-DADOS.
-           STRING CODIGO "," 
-                  NOME "," 
-                  QUANTIDADE "," 
-                  PRECO-UNIDADE "," 
-                  COD-FORNECEDOR "," 
-                  VALOR-TOTAL
+           STRING CODIGO DELIMITED BY SIZE "," 
+                  NOME DELIMITED BY SIZE "," 
+                  QUANTIDADE DELIMITED BY SIZE "," 
+                  PRECO-UNIDADE DELIMITED BY SIZE "," 
+                  COD-FORNECEDOR DELIMITED BY SIZE "," 
+                  VALOR-TOTAL DELIMITED BY SIZE
                   INTO ESTOQUE-DADOS.
 
            OPEN OUTPUT ESTOQUE-FILE.
@@ -100,9 +101,28 @@
            DISPLAY "================================================="
            DISPLAY "              CONSULTAR PRODUTO                  "
            DISPLAY "================================================="
-           DISPLAY "Em desenvolvimento."
+           OPEN INPUT ESTOQUE-FILE
+           PERFORM READ-ESTOQUE UNTIL WS-END-OF-FILE = "Y"
+           CLOSE ESTOQUE-FILE
            DISPLAY "Pressione Enter para continuar..."
            ACCEPT WS-OPTION.
+
+       READ-ESTOQUE.
+           READ ESTOQUE-FILE INTO ESTOQUE-RECORD
+               AT END
+                   MOVE "Y" TO WS-END-OF-FILE
+               NOT AT END
+                   UNSTRING ESTOQUE-DADOS DELIMITED BY ","
+                       INTO CODIGO NOME QUANTIDADE PRECO-UNIDADE 
+                       COD-FORNECEDOR VALOR-TOTAL
+                   DISPLAY "Codigo: " CODIGO
+                   DISPLAY "Nome: " NOME
+                   DISPLAY "Quantidade: " QUANTIDADE
+                   DISPLAY "Preco Unitario: " PRECO-UNIDADE
+                   DISPLAY "Codigo Fornecedor: " COD-FORNECEDOR
+                   DISPLAY "Valor Total: " VALOR-TOTAL
+                   DISPLAY "------------------------------------------"
+           END-READ.
 
        ADICIONAR-PRODUTO.
            CALL 'clearScreen'.

@@ -23,6 +23,7 @@
            05 CNPJ              PIC X(20).
            05 TELEFONE          PIC 9(11).
            05 EMAIL             PIC X(30).
+       01 WS-END-OF-FILE        PIC X VALUE "N".
 
        PROCEDURE DIVISION.
        MAIN-PROGRAM.
@@ -49,6 +50,7 @@
            STOP RUN.
 
        TELA-PRINCIPAL.
+           CALL 'clearScreen'.
            DISPLAY "================================================="
            DISPLAY "              GESTAO DE FORNECEDOR               "
            DISPLAY "================================================="
@@ -93,14 +95,32 @@
            DISPLAY "Fornecedor cadastrado com sucesso!".
 
        CONSULTAR-FORNECEDOR.
-           CALL 'clearScreen'.
+           CALL 'clearScreen' .
            DISPLAY "================================================="
            DISPLAY "             CONSULTAR FORNECEDOR                "
            DISPLAY "================================================="
-           DISPLAY "Em desenvolvimento."
+           OPEN INPUT FORNECEDOR-FILE
+           PERFORM READ-FORNECEDOR UNTIL WS-END-OF-FILE = "Y"
+           CLOSE FORNECEDOR-FILE
            DISPLAY "Pressione Enter para continuar..."
            ACCEPT WS-OPTION.
 
+       READ-FORNECEDOR.
+           READ FORNECEDOR-FILE INTO FORNECEDOR-RECORD
+               AT END
+                   MOVE "Y" TO WS-END-OF-FILE
+               NOT AT END
+                   UNSTRING FORNECEDOR-DADOS DELIMITED BY ","
+                       INTO CODIGO NOME-RAZAO NOME-FANTASIA 
+                       CNPJ TELEFONE EMAIL
+                   DISPLAY "Codigo: " CODIGO
+                   DISPLAY "Nome/Razao: " NOME-RAZAO
+                   DISPLAY "Nome Fantasia: " NOME-FANTASIA
+                   DISPLAY "CNPJ: " CNPJ
+                   DISPLAY "Telefone: " TELEFONE
+                   DISPLAY "Email: " EMAIL
+                   DISPLAY "------------------------------------------"
+           END-READ.
 
        ATUALIZAR-FORNECEDOR.
            CALL 'clearScreen'.
@@ -111,7 +131,6 @@
            DISPLAY "Pressione Enter para continuar..."
            ACCEPT WS-OPTION.
 
-
        REMOVER-FORNECEDOR.
            CALL 'clearScreen'.
            DISPLAY "================================================="
@@ -120,8 +139,6 @@
            DISPLAY "Em desenvolvimento."
            DISPLAY "Pressione Enter para continuar..."
            ACCEPT WS-OPTION.
-
-
 
        RETORNAR.
            DISPLAY "Voltando ao menu principal."

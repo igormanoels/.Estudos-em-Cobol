@@ -25,6 +25,11 @@
                    10 CIDADE            PIC X(20).
                    10 ESTADO            PIC XX.
                    10 COMPLEMENTO       PIC X(20).
+       01 WS-CODIGO                PIC 9(5).
+       01 END-OF-FILE-FLAG         PIC X VALUE 'N'.
+           88 END-OF-FILE          VALUE 'Y'.
+       01 WS-MENSAGEM-CONTINUAR    PIC X(30) 
+       VALUE "Aperte enter para continuar...".
 
        PROCEDURE DIVISION.
        MAIN-PROGRAM.
@@ -55,10 +60,10 @@
            DISPLAY "================================================="
            DISPLAY "                GESTAO ENDERECOS                 "
            DISPLAY "================================================="
-           DISPLAY "1 - Cadastrar Produto"
-           DISPLAY "2 - Consultar Produto"
-           DISPLAY "3 - Adicionar Produto"
-           DISPLAY "4 - Remover Produto"
+           DISPLAY "1 - Cadastrar Endereco"
+           DISPLAY "2 - Consultar Endereco"
+           DISPLAY "3 - Adicionar Endereco"
+           DISPLAY "4 - Remover Endereco"
            DISPLAY "9 - Voltar ao menu principal"
            DISPLAY "=================================================".
 
@@ -103,20 +108,52 @@
            DISPLAY "================================================="
            DISPLAY "              CONSULTAR ENDERECO                 "
            DISPLAY "================================================="
-           DISPLAY "Em desenvolvimento."
-           DISPLAY "Pressione Enter para continuar..."
+           DISPLAY "Digite o codigo do Funcionario/Fornecedor: " 
+           WITH NO ADVANCING
+           ACCEPT CODIGO
+
+           MOVE SPACES TO ENDERECO-DADOS.
+           OPEN INPUT ENDERECO-FILE.
+           PERFORM UNTIL END-OF-FILE
+               READ ENDERECO-FILE INTO ENDERECO-DADOS
+                   AT END
+                       SET END-OF-FILE TO TRUE
+                   NOT AT END
+                       PERFORM PARSE-ENDERECO-RECORD
+                       IF CODIGO = WS-CODIGO
+                           DISPLAY "Rua: " RUA
+                           DISPLAY "Numero: " NUMERO
+                           DISPLAY "CEP: " CEP
+                           DISPLAY "Cidade: " CIDADE
+                           DISPLAY "Estado: " ESTADO
+                           DISPLAY "Complemento: " COMPLEMENTO
+                           SET END-OF-FILE TO TRUE
+                       END-IF
+               END-READ
+           END-PERFORM
+           CLOSE ENDERECO-FILE.
+
+           IF WS-CODIGO NOT = CODIGO
+               DISPLAY "Endereco nao encontrado."
+           END-IF.
+
+           DISPLAY WS-MENSAGEM-CONTINUAR
            ACCEPT WS-OPTION.
 
+       PARSE-ENDERECO-RECORD.
+           UNSTRING ENDERECO-DADOS
+               DELIMITED BY ","
+               INTO WS-CODIGO, RUA, NUMERO, CEP, 
+               CIDADE, ESTADO, COMPLEMENTO.
 
        ATUALIZAR-ENDERECO.
            CALL 'clearScreen'.
            DISPLAY "================================================="
            DISPLAY "              ATUALIZAR ENDERECO                 "
            DISPLAY "================================================="
-           DISPLAY "Em desenvolvimento.".
-           DISPLAY "Pressione Enter para continuar..."
+           DISPLAY "Em desenvolvimento."
+           DISPLAY WS-MENSAGEM-CONTINUAR
            ACCEPT WS-OPTION.
-
 
        REMOVER-ENDERECO.
            CALL 'clearScreen'.
@@ -124,12 +161,11 @@
            DISPLAY "                REMOVER ENDERECO                 "
            DISPLAY "================================================="
            DISPLAY "Em desenvolvimento."
-           DISPLAY "Pressione Enter para continuar..."
+           DISPLAY WS-MENSAGEM-CONTINUAR
            ACCEPT WS-OPTION.
-
 
        RETORNAR.
            DISPLAY "Voltando ao menu principal."
-           DISPLAY "Pressione Enter para continuar..."
+           DISPLAY WS-MENSAGEM-CONTINUAR
            ACCEPT WS-OPTION.
            GOBACK.
