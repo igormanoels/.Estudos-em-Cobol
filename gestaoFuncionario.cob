@@ -203,9 +203,6 @@
        EXCLUIR-FUNCIONARIO.
            DISPLAY "Exclusao de funcionario em desenvolvimento.".
 
-       CLEAR-SYSTEM.
-           CALL 'clearScreen'.
-
        RETORNAR.
            DISPLAY "Voltando ao menu principal."
            GOBACK.
