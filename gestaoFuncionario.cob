@@ -1,11 +1,12 @@
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. gestaoFuncionario.
+       PROGRAM-ID. cadastrarFuncionario.
 
        ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
            SELECT FUNCIONARIO-FILE ASSIGN TO "dadosFuncionario.txt"
-               ORGANIZATION IS LINE SEQUENTIAL.
+           ORGANIZATION IS LINE SEQUENTIAL.
 
        DATA DIVISION.
        FILE SECTION.
@@ -15,20 +16,28 @@
 
        WORKING-STORAGE SECTION.
        01 WS-OPTION             PIC 9(5) VALUE 0.
-       01 FUNCIONARIO.
-           05 CODIGO            PIC 9(5).
-           05 NOME              PIC X(30).
-           05 TIPO-SALARIO      PIC X(1).
-           05 SALARIO-BASE      PIC 9(6)V99.
-           05 NUM-FILHOS        PIC 9(2).
-           05 DEPARTAMENTO      PIC 9.
-           05 FUNCAO            PIC X(1).
-           05 SALARIO-BRUTO     PIC 9(7)V99.
-           05 INSS              PIC 9(6)V99.
-           05 IMPOSTO-RENDA     PIC 9(6)V99.
-           05 SALARIO-FAMILIA   PIC 9(6)V99.
-           05 SALARIO-LIQUIDO   PIC 9(7)V99.
-       01 FUNCIONARIO-ENCONTRADO    PIC X(3) VALUE "NAO".
+       01 WS-DADOS-FUNCIONARIO.
+               05 CODIGO                PIC 9(5).
+               05 NOME                  PIC X(30).
+               05 MATRICULA             PIC X(10).
+               05 CARGO                 PIC X(20).
+               05 DEPARTAMENTO          PIC X(20).
+               05 SALARIO               PIC 9(9)V99.
+               05 DATA_ADMISSAO         PIC X(10).
+               05 DATA_DESLIGAMENTO     PIC X(10).
+       01 WS-CODIGO                PIC 9(5).
+       01 WS-NEW-CODIGO             PIC 9(5).
+       01 WS-NEW-NOME               PIC X(30).
+       01 WS-NEW-MATRICULA          PIC X(10).
+       01 WS-NEW-CARGO              PIC X(20).
+       01 WS-NEW-DEPARTAMENTO       PIC X(20).
+       01 WS-NEW-SALARIO            PIC 9(9)V99.
+       01 WS-NEW-DATA_ADMISSAO      PIC X(10).
+       01 WS-NEW-DATA_DESLIGAMENTO  PIC X(10).
+       01 END-OF-FILE-FLAG         PIC X VALUE 'N'.
+           88 END-OF-FILE          VALUE 'Y'.
+       01 WS-MENSAGEM-CONTINUAR    PIC X(30) 
+       VALUE "Aperte enter para continuar...".
 
        PROCEDURE DIVISION.
        MAIN-PROGRAM.
@@ -44,7 +53,7 @@
                    WHEN 3
                        PERFORM ATUALIZAR-FUNCIONARIO
                    WHEN 4
-                       PERFORM EXCLUIR-FUNCIONARIO
+                       PERFORM REMOVER-FUNCIONARIO
                    WHEN 9
                        PERFORM RETORNAR
                    WHEN OTHER
@@ -57,56 +66,46 @@
        TELA-PRINCIPAL.
            CALL 'clearScreen'.
            DISPLAY "================================================="
-           DISPLAY "              GESTAO DE FUNCIONARIO              "
+           DISPLAY "             GESTAO FUNCIONARIOS                 "
            DISPLAY "================================================="
            DISPLAY "1 - Cadastrar Funcionario"
            DISPLAY "2 - Consultar Funcionario"
            DISPLAY "3 - Atualizar Funcionario"
-           DISPLAY "4 - Deletar Funcionario"
+           DISPLAY "4 - Remover Funcionario"
            DISPLAY "9 - Voltar ao menu principal"
            DISPLAY "=================================================".
-
 
        CADASTRAR-FUNCIONARIO.
            CALL 'clearScreen'.
            DISPLAY "================================================="
-           DISPLAY "              CADASTRAR FUNCIONARIO              "
+           DISPLAY "            CADASTRAR FUNCIONARIO               "
            DISPLAY "================================================="
-           DISPLAY "Digite o codigo do funcionario: " WITH NO ADVANCING
-           ACCEPT CODIGO
+           DISPLAY "Digite o codigo do Funcionario: " 
+           WITH NO ADVANCING ACCEPT CODIGO
            DISPLAY "Digite o nome do funcionario: " WITH NO ADVANCING
            ACCEPT NOME
-           DISPLAY "Tipo de Salario "
-           DISPLAY "(H-Hora, D-Diario, M-Mensal): " WITH NO ADVANCING
-           ACCEPT TIPO-SALARIO
-           DISPLAY "Digite o salario base: " WITH NO ADVANCING
-           ACCEPT SALARIO-BASE
-           DISPLAY "Digite o numero de filhos: " WITH NO ADVANCING
-           ACCEPT NUM-FILHOS
-           DISPLAY "Digite nome do departamento: " WITH NO ADVANCING
+           DISPLAY "Digite a matricula do funcionario: " WITH NO ADVANCING
+           ACCEPT MATRICULA
+           DISPLAY "Digite o cargo do funcionario: " WITH NO ADVANCING
+           ACCEPT CARGO
+           DISPLAY "Digite o departamento: " WITH NO ADVANCING
            ACCEPT DEPARTAMENTO
-           DISPLAY "Digite a funcao: " WITH NO ADVANCING
-           ACCEPT FUNCAO
-
-           PERFORM CALCULAR-SALARIO-BRUTO
-           PERFORM CALCULAR-INSS
-           PERFORM CALCULAR-IMPOSTO-RENDA
-           PERFORM CALCULAR-SALARIO-FAMILIA
-           PERFORM CALCULAR-SALARIO-LIQUIDO
+           DISPLAY "Digite o salario: " WITH NO ADVANCING
+           ACCEPT SALARIO
+           DISPLAY "Digite a data de admissao: " WITH NO ADVANCING
+           ACCEPT DATA_ADMISSAO
+           DISPLAY "Digite a data de desligamento: " WITH NO ADVANCING
+           ACCEPT DATA_DESLIGAMENTO
 
            MOVE SPACES TO FUNCIONARIO-DADOS.
-           STRING CODIGO DELIMITED BY SPACE "," 
-                  NOME DELIMITED BY SPACE "," 
-                  TIPO-SALARIO DELIMITED BY SPACE "," 
-                  SALARIO-BASE DELIMITED BY SPACE "," 
-                  NUM-FILHOS DELIMITED BY SPACE "," 
-                  DEPARTAMENTO DELIMITED BY SPACE "," 
-                  FUNCAO DELIMITED BY SPACE "," 
-                  SALARIO-BRUTO DELIMITED BY SPACE "," 
-                  INSS DELIMITED BY SPACE "," 
-                  IMPOSTO-RENDA DELIMITED BY SPACE "," 
-                  SALARIO-FAMILIA DELIMITED BY SPACE "," 
-                  SALARIO-LIQUIDO DELIMITED BY SPACE 
+           STRING CODIGO "," 
+                  NOME "," 
+                  MATRICULA "," 
+                  CARGO "," 
+                  DEPARTAMENTO "," 
+                  SALARIO "," 
+                  DATA_ADMISSAO "," 
+                  DATA_DESLIGAMENTO
                   INTO FUNCIONARIO-DADOS.
 
            OPEN OUTPUT FUNCIONARIO-FILE.
@@ -115,108 +114,118 @@
 
            DISPLAY "Funcionario cadastrado com sucesso!".
 
-       CALCULAR-SALARIO-BRUTO.
-           EVALUATE TIPO-SALARIO
-               WHEN 'H' COMPUTE SALARIO-BRUTO = SALARIO-BASE * 220
-               WHEN 'D' COMPUTE SALARIO-BRUTO = SALARIO-BASE * 30
-               WHEN 'M' COMPUTE SALARIO-BRUTO = SALARIO-BASE
-               WHEN OTHER
-                   DISPLAY "Tipo de salario invalido." 
-           END-EVALUATE.
-
-       CALCULAR-INSS.
-           IF SALARIO-BRUTO <= 2500
-               COMPUTE INSS = SALARIO-BRUTO * 0.08
-           ELSE IF SALARIO-BRUTO <= 6300
-               COMPUTE INSS = SALARIO-BRUTO * 0.09
-           ELSE
-               COMPUTE INSS = SALARIO-BRUTO * 0.10
-           END-IF.
-
-       CALCULAR-IMPOSTO-RENDA.
-           IF SALARIO-BRUTO <= 5000
-               MOVE 0 TO IMPOSTO-RENDA
-           ELSE IF SALARIO-BRUTO <= 12000
-               COMPUTE IMPOSTO-RENDA = (SALARIO-BRUTO - INSS) * 0.05
-           ELSE
-               COMPUTE IMPOSTO-RENDA = (SALARIO-BRUTO - INSS) * 0.10
-           END-IF.
-
-       CALCULAR-SALARIO-FAMILIA.
-           COMPUTE SALARIO-FAMILIA = NUM-FILHOS * 20.00.
-
-       CALCULAR-SALARIO-LIQUIDO.
-           COMPUTE SALARIO-LIQUIDO = SALARIO-BRUTO + SALARIO-FAMILIA.
-           COMPUTE SALARIO-LIQUIDO = SALARIO-LIQUIDO - INSS.
-           COMPUTE SALARIO-LIQUIDO = SALARIO-LIQUIDO - IMPOSTO-RENDA.
-
-
        CONSULTAR-FUNCIONARIO.
            CALL 'clearScreen'.
            DISPLAY "================================================="
-           DISPLAY "              CONSULTAR FUNCIONARIO              "
+           DISPLAY "           CONSULTAR FUNCIONARIO                 "
            DISPLAY "================================================="
-           DISPLAY "Digite o codigo do funcionario: " WITH NO ADVANCING
-           ACCEPT WS-OPTION
+           DISPLAY "Digite o codigo do Funcionario: " 
+           WITH NO ADVANCING ACCEPT CODIGO
 
-           OPEN INPUT FUNCIONARIO-FILE
-           PERFORM BUSCAR-FUNCIONARIO
-           CLOSE FUNCIONARIO-FILE
-           IF FUNCIONARIO-ENCONTRADO = "SIM"
-               DISPLAY "Funcionario encontrado:"
-               DISPLAY "Codigo: " CODIGO
-               DISPLAY "Nome: " NOME
-               DISPLAY "Tipo de Salario: " TIPO-SALARIO
-               DISPLAY "Salario Base: " SALARIO-BASE
-               DISPLAY "Numero de Filhos: " NUM-FILHOS
-               DISPLAY "Departamento: " DEPARTAMENTO
-               DISPLAY "Funcao: " FUNCAO
-               DISPLAY "Salario Bruto: " SALARIO-BRUTO
-               DISPLAY "INSS: " INSS
-               DISPLAY "Imposto de Renda: " IMPOSTO-RENDA
-               DISPLAY "Salario Familia: " SALARIO-FAMILIA
-               DISPLAY "Salario Liquido: " SALARIO-LIQUIDO
-           ELSE
+           MOVE SPACES TO FUNCIONARIO-DADOS.
+           OPEN INPUT FUNCIONARIO-FILE.
+           PERFORM UNTIL END-OF-FILE
+               READ FUNCIONARIO-FILE INTO FUNCIONARIO-DADOS
+                   AT END
+                       SET END-OF-FILE TO TRUE
+                   NOT AT END
+                       PERFORM PARSE-FUNCIONARIO-RECORD
+                       IF CODIGO = WS-CODIGO
+                           DISPLAY "Nome: " NOME
+                           DISPLAY "Matricula: " MATRICULA
+                           DISPLAY "Cargo: " CARGO
+                           DISPLAY "Departamento: " DEPARTAMENTO
+                           DISPLAY "Salario: " SALARIO
+                           DISPLAY "Data de Admissao: " DATA_ADMISSAO
+                           DISPLAY "Data de Desligamento: " DATA_DESLIGAMENTO
+                           SET END-OF-FILE TO TRUE
+                       END-IF
+               END-READ
+           END-PERFORM
+           CLOSE FUNCIONARIO-FILE.
+
+           IF WS-CODIGO NOT = CODIGO
                DISPLAY "Funcionario nao encontrado."
            END-IF.
-           DISPLAY "Pressione ENTER para continuar."
+
+           DISPLAY WS-MENSAGEM-CONTINUAR
            ACCEPT WS-OPTION.
 
-       BUSCAR-FUNCIONARIO.
-           MOVE "NAO" TO FUNCIONARIO-ENCONTRADO
-           READ FUNCIONARIO-FILE INTO FUNCIONARIO-RECORD
-               AT END
-                   DISPLAY "Arquivo de funcionarios chegou ao fim."
-               NOT AT END
-                   UNSTRING FUNCIONARIO-RECORD DELIMITED BY "," 
-                       INTO CODIGO NOME TIPO-SALARIO SALARIO-BASE 
-                           NUM-FILHOS DEPARTAMENTO FUNCAO SALARIO-BRUTO 
-                           INSS IMPOSTO-RENDA SALARIO-FAMILIA 
-                           SALARIO-LIQUIDO
-                   IF CODIGO = WS-OPTION
-                       MOVE "SIM" TO FUNCIONARIO-ENCONTRADO
-                   END-IF
-           END-READ.
-
+       PARSE-FUNCIONARIO-RECORD.
+           UNSTRING FUNCIONARIO-DADOS
+               DELIMITED BY ","
+               INTO WS-CODIGO, NOME, MATRICULA, 
+               CARGO, DEPARTAMENTO, SALARIO, 
+               DATA_ADMISSAO, DATA_DESLIGAMENTO.
 
        ATUALIZAR-FUNCIONARIO.
            CALL 'clearScreen'.
            DISPLAY "================================================="
-           DISPLAY "            ATUALIZAR FUNCIONARIO                "
+           DISPLAY "          ATUALIZAR FUNCIONARIO                 "
            DISPLAY "================================================="
-           DISPLAY "Em desenvolvimento."
-           DISPLAY "Pressione Enter para continuar..."
-           ACCEPT WS-OPTION.
+           DISPLAY "Digite o codigo do Funcionario: " 
+           WITH NO ADVANCING ACCEPT WS-CODIGO
+           DISPLAY "Digite os novos dados do funcionario: "
+           DISPLAY "Nome: " WITH NO ADVANCING ACCEPT WS-NEW-NOME
+           DISPLAY "Matricula: " WITH NO ADVANCING ACCEPT WS-NEW-MATRICULA
+           DISPLAY "Cargo: " WITH NO ADVANCING ACCEPT WS-NEW-CARGO
+           DISPLAY "Departamento: " WITH NO ADVANCING ACCEPT WS-NEW-DEPARTAMENTO
+           DISPLAY "Salario: " WITH NO ADVANCING ACCEPT WS-NEW-SALARIO
+           DISPLAY "Data de Admissao: " WITH NO ADVANCING ACCEPT WS-NEW-DATA_ADMISSAO
+           DISPLAY "Data de Desligamento: " WITH NO ADVANCING ACCEPT WS-NEW-DATA_DESLIGAMENTO
 
+           MOVE SPACES TO FUNCIONARIO-DADOS.
+           STRING WS-NEW-CODIGO "," 
+                  WS-NEW-NOME "," 
+                  WS-NEW-MATRICULA "," 
+                  WS-NEW-CARGO "," 
+                  WS-NEW-DEPARTAMENTO "," 
+                  WS-NEW-SALARIO "," 
+                  WS-NEW-DATA_ADMISSAO "," 
+                  WS-NEW-DATA_DESLIGAMENTO
+                  INTO FUNCIONARIO-DADOS.
 
-       EXCLUIR-FUNCIONARIO.
+           OPEN I-O FUNCIONARIO-FILE.
+           PERFORM UNTIL END-OF-FILE
+               READ FUNCIONARIO-FILE INTO FUNCIONARIO-DADOS
+                   AT END
+                       SET END-OF-FILE TO TRUE
+                   NOT AT END
+                       PERFORM PARSE-FUNCIONARIO-RECORD
+                       IF WS-CODIGO = CODIGO
+                           REWRITE FUNCIONARIO-RECORD FROM FUNCIONARIO-DADOS
+                           DISPLAY "Funcionario atualizado com sucesso!"
+                           SET END-OF-FILE TO TRUE
+                       END-IF
+               END-READ
+           END-PERFORM
+           CLOSE FUNCIONARIO-FILE.
+
+       REMOVER-FUNCIONARIO.
            CALL 'clearScreen'.
            DISPLAY "================================================="
-           DISPLAY "             REMOVER FUNCIONARIO                 "
+           DISPLAY "              REMOVER FUNCIONARIO               "
            DISPLAY "================================================="
-           DISPLAY "Em desenvolvimento."
-           DISPLAY "Pressione Enter para continuar..."
-           ACCEPT WS-OPTION.
+           DISPLAY "Digite o codigo do Funcionario: " 
+           WITH NO ADVANCING ACCEPT WS-CODIGO
+
+           OPEN I-O FUNCIONARIO-FILE.
+           MOVE SPACES TO FUNCIONARIO-DADOS.
+           PERFORM UNTIL END-OF-FILE
+               READ FUNCIONARIO-FILE INTO FUNCIONARIO-DADOS
+                   AT END
+                       SET END-OF-FILE TO TRUE
+                   NOT AT END
+                       PERFORM PARSE-FUNCIONARIO-RECORD
+                       IF WS-CODIGO NOT = CODIGO
+                           WRITE FUNCIONARIO-RECORD FROM FUNCIONARIO-DADOS
+                       END-IF
+               END-READ
+           END-PERFORM
+           CLOSE FUNCIONARIO-FILE.
+
+           DISPLAY "Funcionario removido com sucesso!".
+
 
        RETORNAR.
            DISPLAY "Voltando ao menu principal."

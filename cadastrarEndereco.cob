@@ -26,6 +26,13 @@
                    10 ESTADO            PIC XX.
                    10 COMPLEMENTO       PIC X(20).
        01 WS-CODIGO                PIC 9(5).
+       01 WS-NEW-CODIGO             PIC 9(5).
+       01 WS-NEW-RUA                PIC X(30).
+       01 WS-NEW-NUMERO             PIC 9(5).
+       01 WS-NEW-CEP                PIC 9(8).
+       01 WS-NEW-CIDADE             PIC X(20).
+       01 WS-NEW-ESTADO             PIC XX.
+       01 WS-NEW-COMPLEMENTO        PIC X(20).
        01 END-OF-FILE-FLAG         PIC X VALUE 'N'.
            88 END-OF-FILE          VALUE 'Y'.
        01 WS-MENSAGEM-CONTINUAR    PIC X(30) 
@@ -62,7 +69,7 @@
            DISPLAY "================================================="
            DISPLAY "1 - Cadastrar Endereco"
            DISPLAY "2 - Consultar Endereco"
-           DISPLAY "3 - Adicionar Endereco"
+           DISPLAY "3 - Atualizar Endereco"
            DISPLAY "4 - Remover Endereco"
            DISPLAY "9 - Voltar ao menu principal"
            DISPLAY "=================================================".
@@ -93,7 +100,7 @@
                   NUMERO "," 
                   CEP "," 
                   CIDADE "," 
-                  ESTADO ","
+                  ESTADO "," 
                   COMPLEMENTO
                   INTO ENDERECO-DADOS.
 
@@ -151,18 +158,66 @@
            DISPLAY "================================================="
            DISPLAY "              ATUALIZAR ENDERECO                 "
            DISPLAY "================================================="
-           DISPLAY "Em desenvolvimento."
-           DISPLAY WS-MENSAGEM-CONTINUAR
-           ACCEPT WS-OPTION.
+           DISPLAY "Digite o codigo do Funcionario/Fornecedor: " 
+           WITH NO ADVANCING ACCEPT WS-CODIGO
+           DISPLAY "Digite os novos dados do endereco: "
+           DISPLAY "Rua: " WITH NO ADVANCING ACCEPT WS-NEW-RUA
+           DISPLAY "Numero: " WITH NO ADVANCING ACCEPT WS-NEW-NUMERO
+           DISPLAY "CEP: " WITH NO ADVANCING ACCEPT WS-NEW-CEP
+           DISPLAY "Cidade: " WITH NO ADVANCING ACCEPT WS-NEW-CIDADE
+           DISPLAY "Estado: " WITH NO ADVANCING ACCEPT WS-NEW-ESTADO
+           DISPLAY "Complemento: " WITH NO ADVANCING ACCEPT WS-NEW-COMPLEMENTO
+
+           MOVE SPACES TO ENDERECO-DADOS.
+           STRING WS-NEW-CODIGO "," 
+                  WS-NEW-RUA "," 
+                  WS-NEW-NUMERO "," 
+                  WS-NEW-CEP "," 
+                  WS-NEW-CIDADE "," 
+                  WS-NEW-ESTADO "," 
+                  WS-NEW-COMPLEMENTO
+                  INTO ENDERECO-DADOS.
+
+           OPEN I-O ENDERECO-FILE.
+           PERFORM UNTIL END-OF-FILE
+               READ ENDERECO-FILE INTO ENDERECO-DADOS
+                   AT END
+                       SET END-OF-FILE TO TRUE
+                   NOT AT END
+                       PERFORM PARSE-ENDERECO-RECORD
+                       IF WS-CODIGO = CODIGO
+                           REWRITE ENDERECO-RECORD FROM ENDERECO-DADOS
+                           DISPLAY "Endereco atualizado com sucesso!"
+                           SET END-OF-FILE TO TRUE
+                       END-IF
+               END-READ
+           END-PERFORM
+           CLOSE ENDERECO-FILE.
 
        REMOVER-ENDERECO.
            CALL 'clearScreen'.
            DISPLAY "================================================="
            DISPLAY "                REMOVER ENDERECO                 "
            DISPLAY "================================================="
-           DISPLAY "Em desenvolvimento."
-           DISPLAY WS-MENSAGEM-CONTINUAR
-           ACCEPT WS-OPTION.
+           DISPLAY "Digite o codigo do Funcionario/Fornecedor: " 
+           WITH NO ADVANCING ACCEPT WS-CODIGO
+
+           OPEN I-O ENDERECO-FILE.
+           MOVE SPACES TO ENDERECO-DADOS.
+           PERFORM UNTIL END-OF-FILE
+               READ ENDERECO-FILE INTO ENDERECO-DADOS
+                   AT END
+                       SET END-OF-FILE TO TRUE
+                   NOT AT END
+                       PERFORM PARSE-ENDERECO-RECORD
+                       IF WS-CODIGO = CODIGO
+                           DISPLAY "Endereco removido com sucesso!"
+                       ELSE
+                           WRITE ENDERECO-RECORD FROM ENDERECO-DADOS
+                       END-IF
+               END-READ
+           END-PERFORM
+           CLOSE ENDERECO-FILE.
 
        RETORNAR.
            DISPLAY "Voltando ao menu principal."
