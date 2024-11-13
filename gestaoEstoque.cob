@@ -6,7 +6,6 @@
        FILE-CONTROL.
            SELECT ESTOQUE-FILE ASSIGN TO "dadosEstoque.txt"
                ORGANIZATION IS LINE SEQUENTIAL.
-       CONFIGURATION SECTION.
 
        DATA DIVISION.
        FILE SECTION.
@@ -15,14 +14,14 @@
            05 ESTOQUE-DADOS PIC X(100).
 
        WORKING-STORAGE SECTION.
-              01 WS-OPTION             PIC 9(5) VALUE 0.
-              01 PRODUTO.
-                  05 CODIGO            PIC 9(5).
-                  05 NOME              PIC X(30).
-                  05 QUANTIDADE        PIC 9(2).
-                  05 PRECO-UNIDADE     PIC 9(7)V99.
-                  05 COD-FORNECEDOR    PIC 9(6).
-                  05 VALOR-TOTAL       PIC 9(7)V99.       
+           01 WS-OPTION             PIC 9 VALUE 0.
+           01 PRODUTO.
+               05 CODIGO            PIC 9(5).
+               05 NOME              PIC X(30).
+               05 QUANTIDADE        PIC 9(2).
+               05 PRECO-UNIDADE     PIC 9(7)V99.
+               05 COD-FORNECEDOR    PIC 9(6).
+               05 VALOR-TOTAL       PIC 9(7)V99.
 
        PROCEDURE DIVISION.
        MAIN-PROGRAM.
@@ -50,16 +49,15 @@
 
        TELA-PRINCIPAL.
            CALL 'clearScreen'.
-           DISPLAY "====================================="
-           DISPLAY "          GESTAO DE ESTOQUE          "
-           DISPLAY "====================================="
+           DISPLAY "================================================="
+           DISPLAY "                GESTAO DE ESTOQUE                "
+           DISPLAY "================================================="
            DISPLAY "1 - Cadastrar Produto"
            DISPLAY "2 - Consultar Produto"
-           DISPLAY "3 - Adcionar Produto"
+           DISPLAY "3 - Adicionar Produto"
            DISPLAY "4 - Remover Produto"
            DISPLAY "9 - Voltar ao menu principal"
            DISPLAY "=================================================".
-
 
        CADASTRAR-PRODUTO.
            CALL 'clearScreen'.
@@ -88,7 +86,6 @@
                   VALOR-TOTAL
                   INTO ESTOQUE-DADOS.
 
-
            OPEN OUTPUT ESTOQUE-FILE.
            WRITE ESTOQUE-RECORD FROM ESTOQUE-DADOS.
            CLOSE ESTOQUE-FILE.
@@ -96,18 +93,29 @@
            DISPLAY "Produto cadastrado com sucesso!".
 
        CALCULAR-VALOR-TOTAL.
-           COMPUTE VALOR-TOTAL = PRECO-UNIDADE * QUANTIDADE
-           
+           COMPUTE VALOR-TOTAL = PRECO-UNIDADE * QUANTIDADE.
 
        CONSULTAR-PRODUTO.
+           CALL 'clearScreen'.
+           DISPLAY "================================================="
+           DISPLAY "              CONSULTAR PRODUTO                  "
+           DISPLAY "================================================="
            DISPLAY "Em desenvolvimento.".
 
-           ADICIONAR-PRODUTO.
+       ADICIONAR-PRODUTO.
+           CALL 'clearScreen'.
+           DISPLAY "================================================="
+           DISPLAY "               ADCIONAR PRODUTO                  "
+           DISPLAY "================================================="
            DISPLAY "Em desenvolvimento.".
+
        REMOVER-PRODUTO.
+           CALL 'clearScreen'.
+           DISPLAY "================================================="
+           DISPLAY "              REMOVER PRODUTO                  "
+           DISPLAY "================================================="
            DISPLAY "Em desenvolvimento.".
 
        RETORNAR.
            DISPLAY "Voltando ao menu principal."
            GOBACK.
-

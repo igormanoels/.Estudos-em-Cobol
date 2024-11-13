@@ -3,6 +3,10 @@
 
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+           SELECT ENDERECO-FILE ASSIGN TO "dadosEndereco.txt"
+           ORGANIZATION IS LINE SEQUENTIAL.
 
        DATA DIVISION.
        FILE SECTION.
@@ -21,7 +25,6 @@
                    10 CIDADE            PIC X(20).
                    10 ESTADO            PIC XX.
                    10 COMPLEMENTO       PIC X(20).
-
 
        PROCEDURE DIVISION.
        MAIN-PROGRAM.
@@ -49,16 +52,15 @@
 
        TELA-PRINCIPAL.
            CALL 'clearScreen'.
-           DISPLAY "====================================="
-           DISPLAY "         CADASTRAR ENDERECO          "
-           DISPLAY "====================================="
+           DISPLAY "================================================="
+           DISPLAY "                CADASTRAR ENDERECO               "
+           DISPLAY "================================================="
            DISPLAY "1 - Cadastrar Produto"
            DISPLAY "2 - Consultar Produto"
-           DISPLAY "3 - Adcionar Produto"
+           DISPLAY "3 - Adicionar Produto"
            DISPLAY "4 - Remover Produto"
            DISPLAY "9 - Voltar ao menu principal"
            DISPLAY "=================================================".
-
 
        CADASTRAR-ENDERECO.
            CALL 'clearScreen'.
@@ -80,8 +82,6 @@
            DISPLAY "Digite o complemento(se houver): " WITH NO ADVANCING
            ACCEPT COMPLEMENTO
 
-
-
            MOVE SPACES TO ENDERECO-DADOS.
            STRING CODIGO "," 
                   RUA "," 
@@ -92,24 +92,33 @@
                   COMPLEMENTO
                   INTO ENDERECO-DADOS.
 
-
            OPEN OUTPUT ENDERECO-FILE.
            WRITE ENDERECO-RECORD FROM ENDERECO-DADOS.
            CLOSE ENDERECO-FILE.
 
-           DISPLAY "Produto cadastrado com sucesso!".
-         
+           DISPLAY "Endereco cadastrado com sucesso!".
 
        CONSULTAR-ENDERECO.
+           CALL 'clearScreen'.
+           DISPLAY "================================================="
+           DISPLAY "              CONSULTAR ENDERECO                 "
+           DISPLAY "================================================="
            DISPLAY "Em desenvolvimento.".
 
        ATUALIZAR-ENDERECO.
+           CALL 'clearScreen'.
+           DISPLAY "================================================="
+           DISPLAY "              ATUALIZAR ENDERECO                 "
+           DISPLAY "================================================="
            DISPLAY "Em desenvolvimento.".
        
        REMOVER-ENDERECO.
+           CALL 'clearScreen'.
+           DISPLAY "================================================="
+           DISPLAY "                REMOVER ENDERECO                 "
+           DISPLAY "================================================="
            DISPLAY "Em desenvolvimento.".
 
        RETORNAR.
            DISPLAY "Voltando ao menu principal."
            GOBACK.
-
